@@ -6,6 +6,37 @@ import { SidebarSearch } from '@app/components/sidebar-search/SidebarSearch';
 import i18n from '@app/utils/i18n';
 import { useAppSelector } from '@app/store/store';
 
+import { Sidebar as RawSidebar } from '@profabric/react-components';
+import { useState } from 'react';
+
+const Sidebar = styled(RawSidebar)`
+  --pf-width: 250px;
+  --pf-background-color: #343a40;
+  --pf-color: #c2c7d0;
+`;
+
+const StyledBrandImage = styled(Image)`
+  line-height: 0.8;
+  opacity: 0.8;
+  --pf-display: block;
+  --pf-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
+    0 6px 6px rgba(0, 0, 0, 0.23) !important;
+`;
+
+const StyledUserImage = styled(Image)`
+  --pf-box-shadow: 0 3px 6px #00000029, 0 3px 6px #0000003b !important;
+`;
+
+export const BrandLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  padding: 11px 22px;
+  transition: width 0.3s ease-in-out;
+  white-space: nowrap;
+`;
+
 export interface IMenuItem {
   name: string;
   icon?: string;
@@ -43,28 +74,25 @@ export const MENU: IMenuItem[] = [
   },
 ];
 
-const StyledBrandImage = styled(Image)`
-  float: left;
-  line-height: 0.8;
-  margin: -1px 8px 0 6px;
-  opacity: 0.8;
-  --pf-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
-    0 6px 6px rgba(0, 0, 0, 0.23) !important;
-`;
-
-const StyledUserImage = styled(Image)`
-  --pf-box-shadow: 0 3px 6px #00000029, 0 3px 6px #0000003b !important;
-`;
-
 const MenuSidebar = () => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
   const sidebarSkin = useAppSelector((state) => state.ui.sidebarSkin);
   const menuItemFlat = useAppSelector((state) => state.ui.menuItemFlat);
   const menuChildIndent = useAppSelector((state) => state.ui.menuChildIndent);
+  const menuSidebarCollapsed = useAppSelector(
+    (state) => state.ui.menuSidebarCollapsed
+  );
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside className={`main-sidebar elevation-4 ${sidebarSkin}`}>
-      <Link to="/" className="brand-link">
+    <Sidebar
+      collapsed={menuSidebarCollapsed}
+      collapsedWidth={74}
+      position="left"
+      expandOnHover
+      onCollapse={({ detail }) => setCollapsed(detail.collapsed)}
+    >
+      <BrandLink to="/" style={{ borderBottom: '1px solid #4b545c' }}>
         <StyledBrandImage
           src="img/logo.png"
           alt="AdminLTE Logo"
@@ -72,32 +100,50 @@ const MenuSidebar = () => {
           height={33}
           rounded
         />
-        <span className="brand-text font-weight-light">AdminLTE 3</span>
-      </Link>
-      <div className="sidebar">
-        <div className="user-panel mt-3 pb-3 mb-3 d-flex">
-          <div className="image">
-            <StyledUserImage
-              src={currentUser?.photoURL}
-              fallbackSrc="/img/default-profile.png"
-              alt="User"
-              width={34}
-              height={34}
-              rounded
-            />
-          </div>
-          <div className="info">
-            <Link to={'/profile'} className="d-block">
+        {!collapsed && (
+          <span
+            style={{
+              color: 'rgba(255,255,255,.8)',
+              fontWeight: '300',
+              marginLeft: '0.5rem',
+            }}
+          >
+            AdminLTE 3
+          </span>
+        )}
+      </BrandLink>
+      <div style={{ padding: '0 0.5rem' }}>
+        <div
+          style={{
+            borderBottom: '1px solid #4b545c',
+            display: 'flex',
+            alignItems: 'center',
+            paddingBottom: '1rem',
+            margin: '1rem 0',
+            paddingLeft: '0.8rem',
+          }}
+        >
+          <StyledUserImage
+            src={currentUser?.photoURL}
+            fallbackSrc="/img/default-profile.png"
+            alt="User"
+            width={34}
+            height={34}
+            rounded
+          />
+          {!collapsed && (
+            <Link
+              to={'/profile'}
+              style={{ color: '#c2c7d0', padding: '5px 5px 5px 10px' }}
+            >
               {currentUser?.email}
             </Link>
-          </div>
+          )}
         </div>
 
-        <div className="form-inline">
-          <SidebarSearch />
-        </div>
+        {!collapsed && <SidebarSearch />}
 
-        <nav className="mt-2" style={{ overflowY: 'hidden' }}>
+        <nav style={{ overflowY: 'hidden', marginTop: '1rem' }}>
           <ul
             className={`nav nav-pills nav-sidebar flex-column${
               menuItemFlat ? ' nav-flat' : ''
@@ -113,7 +159,7 @@ const MenuSidebar = () => {
           </ul>
         </nav>
       </div>
-    </aside>
+    </Sidebar>
   );
 };
 

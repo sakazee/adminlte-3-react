@@ -68,6 +68,7 @@ export const UserFooter = styled.li`
 
 export const UserMenuDropdown = styled(StyledDropdown)`
   --pf-dropdown-menu-min-width: 280px;
+  margin-right: .5rem;
 `;
 
 export const MessagesMenu = styled(StyledDropdown)`

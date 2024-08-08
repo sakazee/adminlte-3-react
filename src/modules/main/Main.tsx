@@ -6,13 +6,14 @@ import {
   scrollbarVisible,
 } from '@app/utils/helpers';
 import ControlSidebar from '@app/modules/main/control-sidebar/ControlSidebar';
-import Header from '@app/modules/main/header/Header';
-import Footer from '@app/modules/main/footer/Footer';
 import { useAppDispatch, useAppSelector } from '@app/store/store';
 import MenuSidebar from './menu-sidebar/MenuSidebar';
 import { styled } from 'styled-components';
 import { Outlet } from 'react-router-dom';
 import { Loading } from '@app/components/Loading';
+import { Layout } from '@profabric/react-components';
+import { AppHeader } from './header/Header';
+import { AppFooter } from './footer/Footer';
 
 const MENU_WIDTH = 250;
 
@@ -47,40 +48,40 @@ const Main = () => {
     setIsAppLoaded(Boolean(currentUser));
   }, [currentUser]);
 
-  useEffect(() => {
-    removeWindowClass('register-page');
-    removeWindowClass('login-page');
-    removeWindowClass('hold-transition');
+  // useEffect(() => {
+  //   removeWindowClass('register-page');
+  //   removeWindowClass('login-page');
+  //   removeWindowClass('hold-transition');
 
-    addWindowClass('sidebar-mini');
+  //   addWindowClass('sidebar-mini');
 
-    // fetchProfile();
-    return () => {
-      removeWindowClass('sidebar-mini');
-    };
-  }, []);
+  //   // fetchProfile();
+  //   return () => {
+  //     removeWindowClass('sidebar-mini');
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    removeWindowClass('sidebar-closed');
-    removeWindowClass('sidebar-collapse');
-    removeWindowClass('sidebar-open');
-    if (menuSidebarCollapsed && screenSize === 'lg') {
-      addWindowClass('sidebar-collapse');
-    } else if (menuSidebarCollapsed && screenSize === 'xs') {
-      addWindowClass('sidebar-open');
-    } else if (!menuSidebarCollapsed && screenSize !== 'lg') {
-      addWindowClass('sidebar-closed');
-      addWindowClass('sidebar-collapse');
-    }
-  }, [screenSize, menuSidebarCollapsed]);
+  // useEffect(() => {
+  //   removeWindowClass('sidebar-closed');
+  //   removeWindowClass('sidebar-collapse');
+  //   removeWindowClass('sidebar-open');
+  //   if (menuSidebarCollapsed && screenSize === 'lg') {
+  //     addWindowClass('sidebar-collapse');
+  //   } else if (menuSidebarCollapsed && screenSize === 'xs') {
+  //     addWindowClass('sidebar-open');
+  //   } else if (!menuSidebarCollapsed && screenSize !== 'lg') {
+  //     addWindowClass('sidebar-closed');
+  //     addWindowClass('sidebar-collapse');
+  //   }
+  // }, [screenSize, menuSidebarCollapsed]);
 
-  useEffect(() => {
-    if (controlSidebarCollapsed) {
-      removeWindowClass('control-sidebar-slide-open');
-    } else {
-      addWindowClass('control-sidebar-slide-open');
-    }
-  }, [screenSize, controlSidebarCollapsed]);
+  // useEffect(() => {
+  //   if (controlSidebarCollapsed) {
+  //     removeWindowClass('control-sidebar-slide-open');
+  //   } else {
+  //     addWindowClass('control-sidebar-slide-open');
+  //   }
+  // }, [screenSize, controlSidebarCollapsed]);
 
   const handleUIChanges = () => {
     setIsScrollbarVisible(scrollbarVisible(window.document.body));
@@ -105,61 +106,36 @@ const Main = () => {
       return <Loading />;
     }
     return (
-      <>
-        <Header
-          containered={layoutBoxed}
-          style={{
-            marginLeft: !['sm', 'xs'].includes(screenSize)
-              ? topNavigation
-                ? '0px'
-                : `${MENU_WIDTH}px`
-              : '0px',
-          }}
-        />
-
+      <Layout style={{ minHeight: '100vh' }}>
         {!topNavigation && <MenuSidebar />}
+        <Layout>
+          <AppHeader containered={layoutBoxed} />
 
-        <div
-          ref={mainRef as any}
-          className="content-wrapper"
-          style={{
-            marginLeft: !['sm', 'xs'].includes(screenSize)
-              ? topNavigation
-                ? '0px'
-                : `${MENU_WIDTH}px`
-              : '0px',
-          }}
-        >
-          <section className="content">
-            <div className={layoutBoxed ? 'container' : ''}>
-              <Outlet />
-            </div>
-          </section>
-        </div>
+          <Layout ref={mainRef as any}>
+            <section>
+              <div>
+                <Outlet />
+              </div>
+            </section>
+          </Layout>
 
-        {/* <Content  containered={layoutBoxed} /> */}
-        <Footer
-          containered={layoutBoxed}
-          style={{
-            marginLeft:
-            !['sm', 'xs'].includes(screenSize)                ? topNavigation
-                  ? '0px'
-                  : `${MENU_WIDTH}px`
-                : '0px',
-          }}
-        />
-        <ControlSidebar />
-        <div
-          id="sidebar-overlay"
-          role="presentation"
-          onClick={handleToggleMenuSidebar}
-          onKeyDown={() => {}}
-          style={{
-            display:
-              screenSize === 'sm' && menuSidebarCollapsed ? 'block' : undefined,
-          }}
-        />
-      </>
+          {/* <Content  containered={layoutBoxed} /> */}
+          <AppFooter />
+          {/* <ControlSidebar /> */}
+          {/* <div
+            id="sidebar-overlay"
+            role="presentation"
+            onClick={handleToggleMenuSidebar}
+            onKeyDown={() => {}}
+            style={{
+              display:
+                screenSize === 'sm' && menuSidebarCollapsed
+                  ? 'block'
+                  : undefined,
+            }}
+          /> */}
+        </Layout>
+      </Layout>
     );
   }, [
     isAppLoaded,

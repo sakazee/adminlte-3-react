@@ -105,7 +105,7 @@ export const SidebarSearch = () => {
       openOnButtonClick={false}
     >
       <div slot="head">
-        <div className="input-group">
+        <div className="input-group" style={{ border: '1px solid #56606a' }}>
           <input
             className="form-control form-control-sidebar"
             type="text"
@@ -124,6 +124,7 @@ export const SidebarSearch = () => {
                 className={`fas ${searchText.length === 0 && 'fa-search'} ${
                   searchText.length > 0 && 'fa-times'
                 } fa-fw`}
+                style={{ color: 'white' }}
               />
             </button>
           </div>

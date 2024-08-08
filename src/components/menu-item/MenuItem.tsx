@@ -3,6 +3,17 @@ import { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useLocation, Location } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { IMenuItem } from '@app/modules/main/menu-sidebar/MenuSidebar';
+import styled from 'styled-components';
+
+export const Container = styled.li`
+  a {
+    color: #c2c7d0 !important;
+
+    &.active {
+      color: white !important;
+    }
+  }
+`;
 
 const MenuItem = ({ menuItem }: { menuItem: IMenuItem }) => {
   const [t] = useTranslation();
@@ -59,7 +70,7 @@ const MenuItem = ({ menuItem }: { menuItem: IMenuItem }) => {
   }, [menuItem]);
 
   return (
-    <li className={`nav-item${isMenuExtended ? ' menu-open' : ''}`}>
+    <Container className={`nav-item${isMenuExtended ? ' menu-open' : ''}`}>
       <a
         className={`nav-link${
           isMainActive || isOneOfChildrenActive ? ' active' : ''
@@ -86,7 +97,7 @@ const MenuItem = ({ menuItem }: { menuItem: IMenuItem }) => {
             </li>
           </ul>
         ))}
-    </li>
+    </Container>
   );
 };
 

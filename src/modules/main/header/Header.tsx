@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react';
+import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -13,6 +13,20 @@ import { styled } from 'styled-components';
 import { Image } from '@profabric/react-components';
 import { useAppDispatch, useAppSelector } from '@app/store/store';
 
+import { Header as RawHeader } from '@profabric/react-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faTable } from '@fortawesome/free-solid-svg-icons';
+
+const Header = styled(RawHeader)`
+  display: flex;
+  width: 100%;
+  --pf-height: 57px;
+  border-bottom: 1px solid #dee2e6;
+
+  --pf-background-color: white;
+  --pf-color: #869099;
+`;
+
 const StyledBrandImage = styled(Image)`
   float: left;
   line-height: 0.8;
@@ -26,7 +40,10 @@ const StyledBrandImage = styled(Image)`
   }
 `;
 
-const Header = ({ containered, ...rest }: { containered?: boolean } & any) => {
+export const AppHeader = ({
+  containered,
+  ...rest
+}: { containered?: boolean } & any) => {
   const [t] = useTranslation();
   const dispatch = useAppDispatch();
   const navbarVariant = useAppSelector((state) => state.ui.navbarVariant);
@@ -50,9 +67,16 @@ const Header = ({ containered, ...rest }: { containered?: boolean } & any) => {
   }, [navbarVariant, headerBorder]);
 
   return (
-    <nav className={getContainerClasses()} {...rest}>
+    <Header {...rest}>
       <div
-        style={{ width: '100%', display: 'flex', alignItems: 'center' }}
+        style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: '57px',
+          padding: '0 2rem',
+        }}
         className={containered ? 'container' : ''}
       >
         {topNavigation && (
@@ -86,47 +110,48 @@ const Header = ({ containered, ...rest }: { containered?: boolean } & any) => {
             </button>
           </>
         )}
-        <ul className="navbar-nav">
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           {!topNavigation && (
-            <li className="nav-item">
-              <button
-                onClick={handleToggleMenuSidebar}
-                type="button"
-                className="nav-link"
-              >
-                <i className="fas fa-bars" />
-              </button>
-            </li>
+            <FontAwesomeIcon
+              onClick={handleToggleMenuSidebar}
+              icon={faBars}
+              style={{ marginRight: '2rem', cursor: 'pointer' }}
+            />
           )}
-          <li className="nav-item d-none d-sm-inline-block">
-            <Link to="/" className="nav-link">
-              {t('header.label.home')}
-            </Link>
-          </li>
-          <li className="nav-item d-none d-sm-inline-block">
-            <Link to="/profile" className="nav-link">
-              Profile
-            </Link>
-          </li>
-        </ul>
-        <ul className="navbar-nav ml-auto">
+          <Link
+            to="/"
+            style={{
+              color: 'rgba(0,0,0,.5)',
+              marginRight: '2rem',
+              cursor: 'pointer',
+            }}
+          >
+            {t('header.label.home')}
+          </Link>
+          <Link
+            to="/profile"
+            style={{
+              color: 'rgba(0,0,0,.5)',
+              marginRight: '2rem',
+              cursor: 'pointer',
+            }}
+          >
+            Profile
+          </Link>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <MessagesDropdown />
           <NotificationsDropdown />
           <LanguagesDropdown />
           <UserDropdown />
-          <li className="nav-item">
-            <button
-              type="button"
-              className="nav-link"
-              onClick={handleToggleControlSidebar}
-            >
-              <i className="fas fa-th-large" />
-            </button>
-          </li>
-        </ul>
+          <FontAwesomeIcon icon={faTable} />
+        </div>
       </div>
-    </nav>
+    </Header>
   );
 };
-
-export default Header;
